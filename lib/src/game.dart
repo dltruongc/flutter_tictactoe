@@ -42,7 +42,7 @@ class _GameState extends State<Game> {
       this.history.add({"squares": squares});
       this.squaresValues = squares;
       // stepNumber == index of history
-      this.stepNumber = history1.length - 1;
+      this.stepNumber = history1.length;
       this.xIsNext = !this.xIsNext;
     });
   }
