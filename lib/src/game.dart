@@ -18,22 +18,18 @@ class _GameState extends State<Game> {
   _GameState() {
     // this.history = List.filled(9, null) => history.last == history[8];
     // => false
-    this.history = [];
+    this.history = [
+      {"squares": List.filled(9, null)}
+    ];
     stepNumber = 0;
     this.squaresValues = List.filled(9, null);
     xIsNext = true;
   }
 
   handleClick(int id) {
-    print("history: ${this.history.length}");
-    final history1 = this.history.isNotEmpty
-        ? this.history.sublist(0, this.stepNumber + 1)
-        : <Map<String, List<String>>>[]; //.slice(0, this.state.stepNumber + 1);
+    final history1 = this.history.sublist(0, this.stepNumber + 1);
 
-    print("history1: ${history1.length}");
-    final current = history1.isNotEmpty
-        ? history1.last
-        : {"squares": List<String>.filled(9, null)};
+    final current = history1.last;
     final squares = [...current['squares']];
 
     if (calculateWinner(squares) != null || squares[id] != null) {
@@ -41,16 +37,13 @@ class _GameState extends State<Game> {
     }
 
     squares[id] = xIsNext ? 'X' : 'O';
-    this.history = history1;
-
+    this.history = [...history1];
     setState(() {
       this.history.add({"squares": squares});
       this.squaresValues = squares;
       this.stepNumber = history1.length;
       this.xIsNext = !this.xIsNext;
     });
-
-    print("After change: ${jsonEncode(this.history)}, $stepNumber");
   }
 
   String calculateWinner(squares) {
@@ -87,9 +80,7 @@ class _GameState extends State<Game> {
   @override
   Widget build(BuildContext context) {
     final history1 = this.history; // reference
-    final current = history1.isNotEmpty
-        ? history1[this.stepNumber]
-        : {"squares": List<String>.filled(9, null)};
+    final current = history1[this.stepNumber];
 
     final winner = calculateWinner(current["squares"]);
 
