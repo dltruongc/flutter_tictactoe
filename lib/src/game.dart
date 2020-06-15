@@ -16,24 +16,18 @@ class _GameState extends State<Game> {
   int stepNumber;
 
   _GameState() {
-    // this.history = List.filled(9, null) => history.last == history[8];
-    // => false
-    this.history = [];
+    // history default length == 1
+    this.history = [
+      {"squares": List<String>.filled(9, null)}
+    ];
     stepNumber = 0;
     this.squaresValues = List.filled(9, null);
     xIsNext = true;
   }
 
   handleClick(int id) {
-    print("history: ${this.history.length}");
-    final history1 = this.history.isNotEmpty
-        ? this.history.sublist(0, this.stepNumber + 1)
-        : <Map<String, List<String>>>[]; //.slice(0, this.state.stepNumber + 1);
-
-    print("history1: ${history1.length}");
-    final current = history1.isNotEmpty
-        ? history1.last
-        : {"squares": List<String>.filled(9, null)};
+    final history1 = this.history.sublist(0, this.stepNumber + 1);
+    final current = history1.last;
     final squares = [...current['squares']];
 
     if (calculateWinner(squares) != null || squares[id] != null) {
@@ -46,11 +40,10 @@ class _GameState extends State<Game> {
     setState(() {
       this.history.add({"squares": squares});
       this.squaresValues = squares;
-      this.stepNumber = history1.length;
+      // stepNumber == index of history
+      this.stepNumber = history1.length - 1;
       this.xIsNext = !this.xIsNext;
     });
-
-    print("After change: ${jsonEncode(this.history)}, $stepNumber");
   }
 
   String calculateWinner(squares) {
@@ -87,15 +80,14 @@ class _GameState extends State<Game> {
   @override
   Widget build(BuildContext context) {
     final history1 = this.history; // reference
-    final current = history1.isNotEmpty
-        ? history1[this.stepNumber]
-        : {"squares": List<String>.filled(9, null)};
+    final current = history1[this.stepNumber];
 
     final winner = calculateWinner(current["squares"]);
 
     final moves = history1.map<Widget>((item) {
       int move = history1.indexOf(item);
-      final desc = move > -1 ? 'Go to move #$move' : 'Go to game start';
+      String desc = 'Go to move #$move';
+      if (move == 0) desc = 'Go to game start';
       return RaisedButton(
         onPressed: () => this.jumpTo(move),
         child: Text(desc),
