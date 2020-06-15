@@ -41,7 +41,8 @@ class _GameState extends State<Game> {
     setState(() {
       this.history.add({"squares": squares});
       this.squaresValues = squares;
-      this.stepNumber = history1.length;
+      // stepNumber == index of history
+      this.stepNumber = history1.length - 1;
       this.xIsNext = !this.xIsNext;
     });
   }
@@ -86,7 +87,8 @@ class _GameState extends State<Game> {
 
     final moves = history1.map<Widget>((item) {
       int move = history1.indexOf(item);
-      final desc = move > -1 ? 'Go to move #$move' : 'Go to game start';
+      String desc = 'Go to move #$move';
+      if (move == 0) desc = 'Go to game start';
       return RaisedButton(
         onPressed: () => this.jumpTo(move),
         child: Text(desc),
