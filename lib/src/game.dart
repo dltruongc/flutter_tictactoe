@@ -16,9 +16,10 @@ class _GameState extends State<Game> {
   int stepNumber;
 
   _GameState() {
-    // history default length == 1
+    // this.history = List.filled(9, null) => history.last == history[8];
+    // => false
     this.history = [
-      {"squares": List<String>.filled(9, null)}
+      {"squares": List.filled(9, null)}
     ];
     stepNumber = 0;
     this.squaresValues = List.filled(9, null);
@@ -27,6 +28,7 @@ class _GameState extends State<Game> {
 
   handleClick(int id) {
     final history1 = this.history.sublist(0, this.stepNumber + 1);
+
     final current = history1.last;
     final squares = [...current['squares']];
 
@@ -35,8 +37,7 @@ class _GameState extends State<Game> {
     }
 
     squares[id] = xIsNext ? 'X' : 'O';
-    this.history = history1;
-
+    this.history = [...history1];
     setState(() {
       this.history.add({"squares": squares});
       this.squaresValues = squares;
